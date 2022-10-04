@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Vega_API.Core.Models;
 using Vega_API.Models;
 
 namespace Vega_API.Core
@@ -8,6 +10,8 @@ namespace Vega_API.Core
         Task<Vehicle> GetVehicle(int id, bool includRelated = true);
         void Add(Vehicle vehicle);
         void Remove(Vehicle vehicle);
+
+        Task<IEnumerable<Vehicle>> GetVehicles(VehicleQuery filter);
     }
 
 }

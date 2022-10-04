@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -36,6 +37,19 @@ namespace Vega_API
             services.AddCors();
 
            services.AddAutoMapper();
+
+            //add  JWT
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.Authority = "https://dev-aoletybq.us.auth0.com/";
+                options.Audience = "https://api.vega.com";
+            });
+
+
             services.AddControllers();
             //add Db Context
             services.AddDbContext<VegaDbContext>(options =>
@@ -70,12 +84,13 @@ namespace Vega_API
             app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v2/swagger.json", "PlaceInfo Services"));
 
 
-
-            app.UseCors(builder =>builder.AllowAnyOrigin());
-            
+            app.UseCors(c => c.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+                       
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

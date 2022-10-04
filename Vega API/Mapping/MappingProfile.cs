@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Vega_API.Controllers.Resources;
+using Vega_API.Core.Models;
 using Vega_API.Models;
 
 namespace Vega_API.Mapping
@@ -26,6 +27,7 @@ namespace Vega_API.Mapping
 
 
             //api to domain
+            CreateMap<VehicleQueryResource, VehicleQuery>();
             CreateMap<SaveVehicleResource, Vehicle>()
                 .ForMember(v => v.Id, opt => opt.Ignore())
                 .ForMember(v => v.ContactName, opt => opt.MapFrom(vr => vr.Contact.Name))

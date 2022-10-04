@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Vega_API.Controllers.Resources;
 using Vega_API.Core;
+using Vega_API.Core.Models;
 using Vega_API.Models;
 
 namespace Vega_API.Controllers
@@ -23,6 +26,7 @@ namespace Vega_API.Controllers
             this.unitOfWork = unitOfWork;
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateVehicle([FromBody] SaveVehicleResource vehicleResource)
         {
             if (!ModelState.IsValid)
@@ -51,6 +55,8 @@ namespace Vega_API.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize]
+
         public async Task<IActionResult> UpdateVehicle(int id, [FromBody] SaveVehicleResource vehicleResource)
         {
             if (!ModelState.IsValid)
@@ -77,6 +83,8 @@ namespace Vega_API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
+
         public async Task<IActionResult> DeleteVehicle(int id)
         {
             var vehicle = await repository.GetVehicle(id, includRelated: false);
@@ -100,6 +108,13 @@ namespace Vega_API.Controllers
 
         }
 
+        [HttpGet]
+        public async Task<IEnumerable<VehicleResource>> GetVehicles(VehicleQueryResource filterResource)
+        {
+            var filter = mapper.Map<VehicleQueryResource, VehicleQuery>(filterResource);
+            var vehicles = await repository.GetVehicles(filter);
 
+            return mapper.Map<IEnumerable<Vehicle>, IEnumerable<VehicleResource>>(vehicles);
+        }
     }
 }
